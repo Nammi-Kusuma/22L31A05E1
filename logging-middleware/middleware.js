@@ -62,7 +62,7 @@ async function Log(stack, level, myPackage, message) {
                 'Authorization': `Bearer ${token}`
             },
             timeout: 5000,
-            validateStatus: () => true // This ensures we get the full response even on error
+            validateStatus: () => true 
         });
 
         console.log(response.data)
