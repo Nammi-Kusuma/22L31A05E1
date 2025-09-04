@@ -89,7 +89,7 @@ function Row({ row }) {
           </Typography>
         </TableCell>
         <TableCell sx={{ display: { xs: 'none', sm: 'table-cell' } }}>
-          {row.clicks || 0}
+          {row.clicks.length}
         </TableCell>
         <TableCell sx={{ display: { xs: 'none', md: 'table-cell' } }}>
           <Box component="span" sx={{ whiteSpace: 'nowrap' }}>
@@ -208,23 +208,21 @@ export default function Statistics() {
   useEffect(() => {
     const fetchRecentUrls = async () => {
       try {
-        // Get locally stored URLs
         const localUrls = JSON.parse(localStorage.getItem('recentUrls') || '[]');
         
-        // If we have locally stored URLs, try to fetch their latest stats
         const updatedUrls = await Promise.all(
           localUrls.map(async (url) => {
             try {
               const shortCode = url.shortUrl.split('/').pop();
-              const response = await axios.get(`${API_BASE_URL}/api/urls/${shortCode}/stats`);
+              const response = await axios.get(`${API_BASE_URL}/shorturls/${shortCode}`);
               return {
                 ...url,
-                clicks: response.data.totalClicks || 0,
+                clicks: response.data.clicks || 0,
                 expiry: response.data.expiry || url.expiry
               };
             } catch (err) {
               console.error('Error fetching URL stats:', err);
-              return url; // Return the original URL if there's an error
+              return url;
             }
           })
         );
